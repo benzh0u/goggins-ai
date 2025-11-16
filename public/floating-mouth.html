@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floating Mouth</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: move;
+      -webkit-app-region: drag;
+    }
+
+    .mouth-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .mouth-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .resize-handle {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      background: rgba(59, 130, 246, 0.7);
+      border: 2px solid rgba(147, 197, 253, 0.5);
+      border-radius: 4px 0 0 0;
+      cursor: nwse-resize;
+      -webkit-app-region: no-drag;
+      z-index: 10;
+      transition: background 0.2s;
+      pointer-events: auto;
+    }
+
+    .resize-handle:hover {
+      background: rgba(59, 130, 246, 1);
+    }
+
+    /* Make sure the resize handle is draggable */
+    .resize-handle:active {
+      background: rgba(37, 99, 235, 1);
+    }
+
+    /* Corner resize area - make it easier to resize */
+    .resize-corner {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 30px;
+      height: 30px;
+      cursor: nwse-resize;
+      -webkit-app-region: no-drag;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div class="mouth-container">
+    <img src="../renderer/public/MouthClosed.png" alt="Floating Mouth" class="mouth-image" id="mouthImage" />
+    <div class="resize-corner"></div>
+    <div class="resize-handle" id="resizeHandle"></div>
+  </div>
+
+  <script>
+    // Note: Window resizing is handled by Electron's native window controls
+    // The resize handle is just visual - Electron handles the actual resizing
+    // since the window is set to resizable: true
+    
+    const mouthImage = document.getElementById('mouthImage')
+
+    // Fallback image loading
+    mouthImage.addEventListener('error', function() {
+      console.log('Failed to load image, trying alternative paths')
+      // Try different paths
+      const paths = [
+        '../renderer/public/MouthClosed.png',
+        './MouthClosed.png', 
+        '../MouthClosed.png', 
+        '../../MouthClosed.png',
+        '/renderer/public/MouthClosed.png'
+      ]
+      let currentPathIndex = 0
+      const tryNextPath = () => {
+        if (currentPathIndex < paths.length) {
+          this.src = paths[currentPathIndex]
+          currentPathIndex++
+        }
+      }
+      tryNextPath()
+    })
+  </script>
+</body>
+</html>
+
